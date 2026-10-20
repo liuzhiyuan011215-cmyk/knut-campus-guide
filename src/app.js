@@ -300,14 +300,24 @@ async function copy(s){
 
 /* ---------- events ---------- */
 function update(){S.page=1;renderDir()}
-function switchMode(m){
-  // 레이아웃은 그대로 두고 바뀌는 글자만 교차 전환 — 화면이 비는 순간이 없도록
+// 모드 전환: 스냅샷(View Transitions) 대신 실제 요소에 애니메이션 — iOS에서 끝난 뒤 글자가 튀지 않도록
+const SWAP=[[".brand span",0],[".nav",0],[".eyebrow",0],["h1",40],[".sub",90],[".lead",130],["#scenes",170],[".ledger",210],
+  ["#picks h2",60],["#pickTabs",60],["#pickBody",140],["#all h2",60],["#cats",100],["#filters",120],["#sum",140],["#grid",160],["#pager",160],["#data h2",60],[".princ",120],["footer",120]];
+async function switchMode(m){
   try{localStorage.setItem("knut-lang",m)}catch(_){}
   const apply=()=>{S.lang=m;resetFilters();S.tab=t("tabs")[0][0];S.tip=0;renderAll();if(curId)openPlace(curId,randMode)};
-  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return apply();
-  if(document.startViewTransition){document.startViewTransition(apply).ready.catch(()=>{});return} // 탭이 백그라운드면 브라우저가 전환을 건너뜀
-  apply();document.body.classList.remove("swap-in");void document.body.offsetWidth;document.body.classList.add("swap-in");
-  setTimeout(()=>document.body.classList.remove("swap-in"),900);
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches||!document.body.animate)return apply();
+  $("#modeSeg").dataset.mode=m;
+  document.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===m));
+  const els=SWAP.map(([sel,d])=>[$(sel),d]).filter(([el])=>el);
+  const outs=els.map(([el])=>el.animate([{opacity:1,transform:"none",filter:"blur(0)"},{opacity:0,transform:"translateY(-6px)",filter:"blur(3px)"}],
+    {duration:170,easing:"cubic-bezier(.4,0,1,1)",fill:"forwards"}));
+  await Promise.all(outs.map(a=>a.finished.catch(()=>{})));
+  apply();
+  // 들어오는 애니메이션을 먼저 걸고 나서 나가는 애니메이션을 지워야 한 프레임도 비지 않음
+  els.forEach(([el,d])=>el.animate([{opacity:0,transform:"translateY(10px)",filter:"blur(5px)"},{opacity:1,transform:"none",filter:"blur(0)"}],
+    {duration:520,delay:d,easing:"cubic-bezier(.16,1,.3,1)",fill:"backwards"}));
+  outs.forEach(a=>a.cancel());
 }
 function resetFilters(){Object.assign(S,{cat:"all",q:"",solo:false,budget:"any",cand:false,page:1});S.scenes.clear();$("#q").value=$("#heroQ").value=""}
 
