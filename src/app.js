@@ -305,7 +305,7 @@ function switchMode(m){
   try{localStorage.setItem("knut-lang",m)}catch(_){}
   const apply=()=>{S.lang=m;resetFilters();S.tab=t("tabs")[0][0];S.tip=0;renderAll();if(curId)openPlace(curId,randMode)};
   if(matchMedia("(prefers-reduced-motion: reduce)").matches)return apply();
-  if(document.startViewTransition)return document.startViewTransition(apply);
+  if(document.startViewTransition){document.startViewTransition(apply).ready.catch(()=>{});return} // 탭이 백그라운드면 브라우저가 전환을 건너뜀
   apply();document.body.classList.remove("swap-in");void document.body.offsetWidth;document.body.classList.add("swap-in");
   setTimeout(()=>document.body.classList.remove("swap-in"),900);
 }
