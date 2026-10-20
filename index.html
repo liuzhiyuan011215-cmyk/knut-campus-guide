@@ -42,7 +42,7 @@ svg{flex:none}
 .modeseg i{position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:999px;background:var(--ink);transition:transform .35s cubic-bezier(.2,.8,.2,1),background .35s}
 .modeseg[data-mode="zh"] i{transform:translateX(100%);background:var(--clay)}
 /* 모드 전환: 화면을 비우지 않고 바뀌는 글자만 교차 전환 (View Transitions) */
-::view-transition-old(root),::view-transition-new(root){animation-duration:.45s}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.4s}
 .modeseg{view-transition-name:mode-seg}
 ::view-transition-old(mode-seg){display:none}
 ::view-transition-new(mode-seg){animation:none}
@@ -54,16 +54,18 @@ h1{view-transition-name:vt-title}
 .brand span{view-transition-name:vt-brand}
 #picks h2{view-transition-name:vt-picks}
 #pickBody{view-transition-name:vt-rail}
-::view-transition-old(vt-eyebrow),::view-transition-old(vt-brand),::view-transition-old(vt-title),::view-transition-old(vt-sub),::view-transition-old(vt-lead),::view-transition-old(vt-scenes),::view-transition-old(vt-picks),::view-transition-old(vt-rail){animation:.28s cubic-bezier(.4,0,1,1) both vt-out}
-::view-transition-new(vt-eyebrow),::view-transition-new(vt-brand),::view-transition-new(vt-title),::view-transition-new(vt-sub),::view-transition-new(vt-lead),::view-transition-new(vt-scenes),::view-transition-new(vt-picks),::view-transition-new(vt-rail){animation:.62s cubic-bezier(.16,1,.3,1) both vt-in}
-::view-transition-new(vt-eyebrow){animation-delay:0s}
-::view-transition-new(vt-brand){animation-delay:.02s}
-::view-transition-new(vt-title){animation-delay:.06s}
-::view-transition-new(vt-sub){animation-delay:.12s}
-::view-transition-new(vt-lead){animation-delay:.16s}
-::view-transition-new(vt-scenes){animation-delay:.22s}
-::view-transition-new(vt-picks){animation-delay:.1s}
-::view-transition-new(vt-rail){animation-delay:.18s}
+::view-transition-group(vt-eyebrow),::view-transition-group(vt-brand),::view-transition-group(vt-title),::view-transition-group(vt-sub),::view-transition-group(vt-lead),::view-transition-group(vt-scenes),::view-transition-group(vt-picks),::view-transition-group(vt-rail),::view-transition-group(mode-seg){animation:none}
+::view-transition-old(vt-eyebrow),::view-transition-new(vt-eyebrow),::view-transition-old(vt-brand),::view-transition-new(vt-brand),::view-transition-old(vt-title),::view-transition-new(vt-title),::view-transition-old(vt-sub),::view-transition-new(vt-sub),::view-transition-old(vt-lead),::view-transition-new(vt-lead),::view-transition-old(vt-scenes),::view-transition-new(vt-scenes),::view-transition-old(vt-picks),::view-transition-new(vt-picks),::view-transition-old(vt-rail),::view-transition-new(vt-rail){width:auto;height:auto}
+::view-transition-old(vt-eyebrow),::view-transition-old(vt-brand),::view-transition-old(vt-title),::view-transition-old(vt-sub),::view-transition-old(vt-lead),::view-transition-old(vt-scenes),::view-transition-old(vt-picks),::view-transition-old(vt-rail){animation:.2s cubic-bezier(.4,0,1,1) both vt-out}
+::view-transition-new(vt-eyebrow),::view-transition-new(vt-brand),::view-transition-new(vt-title),::view-transition-new(vt-sub),::view-transition-new(vt-lead),::view-transition-new(vt-scenes),::view-transition-new(vt-picks),::view-transition-new(vt-rail){animation:.55s cubic-bezier(.16,1,.3,1) both vt-in}
+::view-transition-new(vt-eyebrow){animation-delay:0.16s}
+::view-transition-new(vt-brand){animation-delay:0.16s}
+::view-transition-new(vt-title){animation-delay:0.2s}
+::view-transition-new(vt-sub){animation-delay:0.25s}
+::view-transition-new(vt-lead){animation-delay:0.29s}
+::view-transition-new(vt-scenes){animation-delay:0.33s}
+::view-transition-new(vt-picks){animation-delay:0.2s}
+::view-transition-new(vt-rail){animation-delay:0.27s}
 @keyframes vt-out{to{opacity:0;transform:translateY(-8px);filter:blur(4px)}}
 @keyframes vt-in{from{opacity:0;transform:translateY(14px);filter:blur(6px)}}
 /* View Transitions 미지원 브라우저용 */
@@ -285,6 +287,8 @@ details.orig summary{cursor:pointer}
   .grid{grid-template-columns:1fr}
   #cats{max-width:100%;overflow-x:auto;scrollbar-width:none}
   .scenes{min-height:0}
+  .go{margin-top:8px}
+  .ledger{margin-top:20px}
   .scenes,.row.scroll{flex-wrap:nowrap;overflow-x:auto;margin-right:-16px;padding-right:16px;scrollbar-width:none}
   .tipcard{padding:24px 20px}
   .facts,.princ{grid-template-columns:1fr}
@@ -715,7 +719,7 @@ function switchMode(m){
   try{localStorage.setItem("knut-lang",m)}catch(_){}
   const apply=()=>{S.lang=m;resetFilters();S.tab=t("tabs")[0][0];S.tip=0;renderAll();if(curId)openPlace(curId,randMode)};
   if(matchMedia("(prefers-reduced-motion: reduce)").matches)return apply();
-  if(document.startViewTransition)return document.startViewTransition(apply);
+  if(document.startViewTransition){document.startViewTransition(apply).ready.catch(()=>{});return} // 탭이 백그라운드면 브라우저가 전환을 건너뜀
   apply();document.body.classList.remove("swap-in");void document.body.offsetWidth;document.body.classList.add("swap-in");
   setTimeout(()=>document.body.classList.remove("swap-in"),900);
 }
