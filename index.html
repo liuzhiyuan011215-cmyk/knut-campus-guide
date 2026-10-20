@@ -41,8 +41,34 @@ svg{flex:none}
 .modeseg button[aria-pressed="true"]{color:var(--bg)}
 .modeseg i{position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:999px;background:var(--ink);transition:transform .35s cubic-bezier(.2,.8,.2,1),background .35s}
 .modeseg[data-mode="zh"] i{transform:translateX(100%);background:var(--clay)}
-main,footer,.nav,.brand span{transition:opacity .2s ease}
-body.switching main,body.switching footer,body.switching .nav,body.switching .brand span{opacity:0}
+/* 모드 전환: 화면을 비우지 않고 바뀌는 글자만 교차 전환 (View Transitions) */
+::view-transition-old(root),::view-transition-new(root){animation-duration:.45s}
+.modeseg{view-transition-name:mode-seg}
+::view-transition-old(mode-seg){display:none}
+::view-transition-new(mode-seg){animation:none}
+.eyebrow{view-transition-name:vt-eyebrow}
+h1{view-transition-name:vt-title}
+.sub{view-transition-name:vt-sub}
+.lead{view-transition-name:vt-lead}
+#scenes{view-transition-name:vt-scenes}
+.brand span{view-transition-name:vt-brand}
+#picks h2{view-transition-name:vt-picks}
+#pickBody{view-transition-name:vt-rail}
+::view-transition-old(vt-eyebrow),::view-transition-old(vt-brand),::view-transition-old(vt-title),::view-transition-old(vt-sub),::view-transition-old(vt-lead),::view-transition-old(vt-scenes),::view-transition-old(vt-picks),::view-transition-old(vt-rail){animation:.28s cubic-bezier(.4,0,1,1) both vt-out}
+::view-transition-new(vt-eyebrow),::view-transition-new(vt-brand),::view-transition-new(vt-title),::view-transition-new(vt-sub),::view-transition-new(vt-lead),::view-transition-new(vt-scenes),::view-transition-new(vt-picks),::view-transition-new(vt-rail){animation:.62s cubic-bezier(.16,1,.3,1) both vt-in}
+::view-transition-new(vt-eyebrow){animation-delay:0s}
+::view-transition-new(vt-brand){animation-delay:.02s}
+::view-transition-new(vt-title){animation-delay:.06s}
+::view-transition-new(vt-sub){animation-delay:.12s}
+::view-transition-new(vt-lead){animation-delay:.16s}
+::view-transition-new(vt-scenes){animation-delay:.22s}
+::view-transition-new(vt-picks){animation-delay:.1s}
+::view-transition-new(vt-rail){animation-delay:.18s}
+@keyframes vt-out{to{opacity:0;transform:translateY(-8px);filter:blur(4px)}}
+@keyframes vt-in{from{opacity:0;transform:translateY(14px);filter:blur(6px)}}
+/* View Transitions 미지원 브라우저용 */
+body.swap-in :is(.eyebrow,h1,.sub,.lead,#scenes,#picks h2,#pickBody){animation:vt-in .6s cubic-bezier(.16,1,.3,1) both}
+body.swap-in .sub{animation-delay:.06s}body.swap-in .lead{animation-delay:.1s}body.swap-in #scenes{animation-delay:.14s}
 .scenes{min-height:80px;align-content:flex-start}
 .lead{min-height:3.2em}
 .go{display:inline-flex;visibility:hidden;margin-top:14px;font-size:14px;font-weight:600;color:var(--clay-ink);text-decoration:none;align-items:center;gap:6px}
@@ -685,13 +711,13 @@ async function copy(s){
 /* ---------- events ---------- */
 function update(){S.page=1;renderDir()}
 function switchMode(m){
-  // 레이아웃은 그대로 두고 내용만 페이드로 교체
-  S.lang=m;try{localStorage.setItem("knut-lang",m)}catch(_){}
-  $("#modeSeg").dataset.mode=m;
-  document.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===m));
-  document.body.classList.add("switching");
-  setTimeout(()=>{resetFilters();S.tab=t("tabs")[0][0];S.tip=0;renderAll();if(curId)openPlace(curId,randMode);
-    requestAnimationFrame(()=>document.body.classList.remove("switching"))},200);
+  // 레이아웃은 그대로 두고 바뀌는 글자만 교차 전환 — 화면이 비는 순간이 없도록
+  try{localStorage.setItem("knut-lang",m)}catch(_){}
+  const apply=()=>{S.lang=m;resetFilters();S.tab=t("tabs")[0][0];S.tip=0;renderAll();if(curId)openPlace(curId,randMode)};
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return apply();
+  if(document.startViewTransition)return document.startViewTransition(apply);
+  apply();document.body.classList.remove("swap-in");void document.body.offsetWidth;document.body.classList.add("swap-in");
+  setTimeout(()=>document.body.classList.remove("swap-in"),900);
 }
 function resetFilters(){Object.assign(S,{cat:"all",q:"",solo:false,budget:"any",cand:false,page:1});S.scenes.clear();$("#q").value=$("#heroQ").value=""}
 

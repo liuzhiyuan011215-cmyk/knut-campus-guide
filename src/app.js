@@ -301,13 +301,13 @@ async function copy(s){
 /* ---------- events ---------- */
 function update(){S.page=1;renderDir()}
 function switchMode(m){
-  // 레이아웃은 그대로 두고 내용만 페이드로 교체
-  S.lang=m;try{localStorage.setItem("knut-lang",m)}catch(_){}
-  $("#modeSeg").dataset.mode=m;
-  document.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===m));
-  document.body.classList.add("switching");
-  setTimeout(()=>{resetFilters();S.tab=t("tabs")[0][0];S.tip=0;renderAll();if(curId)openPlace(curId,randMode);
-    requestAnimationFrame(()=>document.body.classList.remove("switching"))},200);
+  // 레이아웃은 그대로 두고 바뀌는 글자만 교차 전환 — 화면이 비는 순간이 없도록
+  try{localStorage.setItem("knut-lang",m)}catch(_){}
+  const apply=()=>{S.lang=m;resetFilters();S.tab=t("tabs")[0][0];S.tip=0;renderAll();if(curId)openPlace(curId,randMode)};
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return apply();
+  if(document.startViewTransition)return document.startViewTransition(apply);
+  apply();document.body.classList.remove("swap-in");void document.body.offsetWidth;document.body.classList.add("swap-in");
+  setTimeout(()=>document.body.classList.remove("swap-in"),900);
 }
 function resetFilters(){Object.assign(S,{cat:"all",q:"",solo:false,budget:"any",cand:false,page:1});S.scenes.clear();$("#q").value=$("#heroQ").value=""}
 
