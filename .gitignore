@@ -1,0 +1,7 @@
+# 배포에는 index.html 하나면 충분 (사진·데이터 모두 내장)
+_backup/
+assets/
+.taste-skill/
+knut_campus.db
+schema.sql
+.DS_Store
