@@ -4,6 +4,9 @@
 > **작성자**: LIU ZHIYUAN (유지원 · 2544412)  
 > **대상**: 한국교통대학교 충주캠퍼스 신입생 및 외국인 유학생 (한/중 양방향 전환 지원)
 
+**배포 주소**: https://liuzhiyuan011215-cmyk.github.io/knut-campus-guide/  
+**저장소**: https://github.com/liuzhiyuan011215-cmyk/knut-campus-guide
+
 ---
 
 ## 1. 프로젝트 개요 및 데이터 정규화 특징
