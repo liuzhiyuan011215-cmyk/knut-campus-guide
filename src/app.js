@@ -5,7 +5,7 @@ const PLACES = DATA.places, TIPS = DATA.tips;
 const EXTERIOR = new Set([154]);
 
 const T = {
-  ko:{brand:"KNUT 꿀팁 가이드",modeBtn:"유학생 모드 · 中文",nav:[["#picks","추천"],["#all","전체 목록"],["#data","데이터 원칙"]],
+  ko:{brand:"KNUT 꿀팁 가이드",nav:[["#picks","추천"],["#all","전체 목록"],["#data","데이터 원칙"]],
     h1:"한국교통대학교<br>캠퍼스 꿀팁 가이드",eyebrow:"충주캠퍼스 · 교통대생이 직접 추천한 동네 안내서",sub:"충주캠퍼스 주변 맛집 & 숨은 힐링/공부 장소 모아보기",
     lead:"수강생들이 직접 다녀와 남긴 추천 250건을 178곳으로 정리했습니다. 원문에 없는 정보는 짐작하지 않고 '확인 안 됨'으로 남겨 두었어요.",
     searchPh:"가게 이름, 메뉴, 주소 — 예: 국밥, 도서관",searchPh2:"이름 · 메뉴 · 주소 검색",find:"찾기",
@@ -28,9 +28,9 @@ const T = {
     p3t:"원문 확정 / 참고 후보",p3:"어림수·무게제·2인분 가격은 대표가격 대신 비고에 보존했습니다. 혼밥·예산 필터에서는 두 층을 나눠 보여 줍니다.",
     foot1:"LIU ZHIYUAN (유지원 · 2544412) · AI 데이터 서사 & Vibe Coding · 2026",foot2:"데이터 확인일 2026-10 · 영업 정보는 방문 전 지도에서 다시 확인하세요",
     credit2:"사진: 네이버 플레이스 방문자 사진 · 네이버 블로그 (2024년 이후 게시물만 사용)"},
-  zh:{brand:"KNUT 留学生指南",modeBtn:"返回韩国学生版 · 한국어",nav:[["#picks","精选"],["#picks","生存指南","tips"],["#all","全部地点"],["#data","数据原则"]],
+  zh:{brand:"KNUT 留学生指南",nav:[["#picks","精选"],["#all","全部地点"],["#data","数据原则"]],
     h1:"韩国交通大学<br>留学生生存指南",eyebrow:"忠州校区 · 写给中国留学生的校园周边指南",sub:"不会韩语也能吃饭、办事、找地方自习",
-    lead:"把同学们亲自去过、留下的 250 条推荐整理成 178 个地点，再挑出留学生最需要的：能用 Kiosk 点餐的店、老板会中文的店、ARC 和银行开户怎么办。原文没写的信息不猜，一律标「未确认」。",
+    lead:"把同学们亲自去过的 250 条推荐整理成 178 个地点，并挑出留学生最需要的信息。原文没写的不靠店名去猜，一律标为「未确认」。",
     searchPh:"搜店名、菜品、地址 —— 例：麻辣烫、图书馆",searchPh2:"搜索店名 · 菜品 · 地址",find:"搜索",
     go:n=>`查看符合条件的 ${n} 个地点`,rand:"随机抽一家",
     stPlaces:"整理地点",stFood:"美食",stHidden:"隐秘好去处",stRecs:"推荐记录",credit:"图片 · Naver Place 访客实拍",
@@ -62,9 +62,10 @@ const SCENES = {
   study:{icon:"plug",ko:"공부하기 좋은 곳",zh:"充电插座自习",test:p=>/콘센트|충전|공부|열람|스터디/.test(text(p))},
   late:{icon:"clock",ko:"밤늦게까지 영업",zh:"营业到很晚",test:p=>/24시|24:00|~\s*(2[2-4]|0[0-5]):\d\d/.test(p.hours)},
   kiosk:{icon:"kiosk",ko:"키오스크 주문",zh:"Kiosk 点餐免开口",test:p=>/키오스크/.test(text(p))},
-  chinese:{icon:"chat",ko:"중국어 소통",zh:"老板会中文",test:p=>/중국어/.test(text(p))}
+  chinese:{icon:"chat",ko:"중국어 소통",zh:"老板会中文",test:p=>/중국어/.test(text(p))},
+  popular:{icon:"check",ko:"여러 명이 추천한 곳",zh:"多人推荐",test:p=>p.recs>=3}
 };
-const MODE_SCENES = {ko:["solo","b8000","study","late"], zh:["solo","kiosk","chinese","b5000","study"]};
+const MODE_SCENES = {ko:["solo","b8000","study","late","popular"], zh:["solo","kiosk","chinese","b5000","study"]};
 const BUDGETS = [["any",null],["5000",[0,5000]],["8000",[0,8000]],["10000",[0,10000]],["over",[10001,1e9]]];
 const S = {lang:"ko", cat:"all", q:"", solo:false, budget:"any", sort:"rec", scenes:new Set(), cand:false, page:1, tab:"food", tip:0};
 try{ if(localStorage.getItem("knut-lang")==="zh") S.lang="zh" }catch(e){}
@@ -157,13 +158,14 @@ function renderStatic(){
   document.querySelectorAll("[data-t]").forEach(el=>{const v=T[S.lang][el.dataset.t];if(typeof v==="string")el.textContent=v});
   document.querySelectorAll("[data-th]").forEach(el=>el.innerHTML=T[S.lang][el.dataset.th]);
   document.querySelectorAll("[data-tp]").forEach(el=>el.placeholder=t(el.dataset.tp));
-  $("#modeBtn").setAttribute("aria-pressed",zh());
+  $("#modeSeg").dataset.mode=S.lang;
+  document.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===S.lang));
   $("#nav").innerHTML=t("nav").map(([h,l,tab])=>`<a href="${h}"${tab?` data-tab="${tab}"`:""}>${l}</a>`).join("");
   $("#all h2").textContent=t("allTitle",PLACES.length);
   const total=PLACES.reduce((a,p)=>a+p.recs,0);
   $("#ledger").innerHTML=[[PLACES.length,"stPlaces"],[counts(isFood),"stFood"],[counts(p=>!isFood(p)),"stHidden"],[total,"stRecs"]]
     .map(([n,k])=>`<div><b>${n}</b><span>${t(k)}</span></div>`).join("");
-  const tiles=zh()?[[55,"t1"],[2,"t2"],[147,"t3"],[3,"t4"]]:[[2,"t1"],[26,"t2"],[147,"t3"],[1,"t4"]];
+  const tiles=[[2,"t1"],[26,"t2"],[147,"t3"],[1,"t4"]];
   $("#mosaic").innerHTML=tiles.map(([id,c])=>`<button class="tile ${c}" data-id="${id}"><img src="${PHOTOS[id]}" alt="${esc(short(byId[id]))}"><span>${esc(short(byId[id]))}</span></button>`).join("");
   $("#princ").innerHTML=[1,2,3].map(i=>`<div><b>${t("p"+i+"t")}</b><p>${t("p"+i)}</p></div>`).join("");
   $("#pickTabs").innerHTML=t("tabs").map(([k,l])=>`<button role="tab" data-tab="${k}">${l}</button>`).join("");
@@ -298,13 +300,21 @@ async function copy(s){
 
 /* ---------- events ---------- */
 function update(){S.page=1;renderDir()}
+function switchMode(m){
+  // 레이아웃은 그대로 두고 내용만 페이드로 교체
+  S.lang=m;try{localStorage.setItem("knut-lang",m)}catch(_){}
+  $("#modeSeg").dataset.mode=m;
+  document.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===m));
+  document.body.classList.add("switching");
+  setTimeout(()=>{resetFilters();S.tab=t("tabs")[0][0];S.tip=0;renderAll();if(curId)openPlace(curId,randMode);
+    requestAnimationFrame(()=>document.body.classList.remove("switching"))},200);
+}
 function resetFilters(){Object.assign(S,{cat:"all",q:"",solo:false,budget:"any",cand:false,page:1});S.scenes.clear();$("#q").value=$("#heroQ").value=""}
 
 document.addEventListener("click",e=>{
   const el=e.target.closest("button,a,li");if(!el)return;
   const d=el.dataset;
-  if(el.id==="modeBtn"){S.lang=zh()?"ko":"zh";try{localStorage.setItem("knut-lang",S.lang)}catch(_){}
-    resetFilters();S.tab=t("tabs")[0][0];S.tip=0;renderAll();if(curId)openPlace(curId,randMode);scrollTo({top:0});return}
+  if(d.mode){if(d.mode!==S.lang)switchMode(d.mode);return}
   if(d.copy!=null){copy(d.copy);return}
   if(d.rand!=null){randomPick();return}
   if(d.id){openPlace(+d.id);return}
