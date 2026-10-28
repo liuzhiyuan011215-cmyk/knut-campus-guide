@@ -328,8 +328,8 @@ document.addEventListener("click",e=>{
   if(d.copy!=null){copy(d.copy);return}
   if(d.rand!=null){randomPick();return}
   if(d.id){openPlace(+d.id);return}
-  if(d.tab){S.tab=d.tab;renderPicks();return}
-  if(d.tip!=null){S.tip=+d.tip;renderPicks();return}
+  if(d.tab){S.tab=d.tab;renderPicks();$("#pickBody")?.animate([{opacity:0,transform:"translateY(12px)",filter:"blur(4px)"},{opacity:1,transform:"none",filter:"blur(0)"}],{duration:420,easing:"cubic-bezier(.16,1,.3,1)"});return}
+  if(d.tip!=null){S.tip=+d.tip;renderPicks();$(".tipcard")?.animate([{opacity:0,transform:"translateY(8px)"},{opacity:1,transform:"none"}],{duration:320,easing:"cubic-bezier(.16,1,.3,1)"});return}
   if(d.scene){sceneToggle(d.scene);update();return}
   if(d.cat){S.cat=d.cat;update();return}
   if(d.budget){S.budget=d.budget;update();return}
