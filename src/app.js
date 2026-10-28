@@ -1,8 +1,8 @@
 const DATA = /*__DATA__*/null;
 const PHOTOS = /*__PHOTOS__*/{};
 const PLACES = DATA.places, TIPS = DATA.tips;
-// 장소 자체가 아니라 그 장소가 있는 건물 외관 사진인 경우 (사진에 표시)
-const EXTERIOR = new Set([154]);
+// 장소 자체가 아니라 그 장소가 있는 건물 외관 사진인 경우 (사진에 표시). 154는 도서관으로 정정되며 사진도 뺌
+const EXTERIOR = new Set([]);
 
 const T = {
   ko:{brand:"KNUT 꿀팁 가이드",nav:[["#picks","추천"],["#all","전체 목록"],["#data","데이터 원칙"]],
@@ -261,7 +261,7 @@ function openPlace(id,rand=false){
   $("#dHead").textContent=rand?t("randHead"):catLabel(p)+" · "+t("rec",p.recs);
   $("#dBody").innerHTML=`${PHOTOS[p.id]?`<div class="ph">${photo(p)}</div>`:""}
     <span class="cat${isFood(p)?"":" h"}" style="font-size:13px;color:var(--muted)">${catLabel(p)} · ${t("rec",p.recs)}</span>
-    <h3 id="dName">${esc(nm(p))}</h3><p class="alt">${esc(zh()?p.name:p.name_zh)}</p>
+    <h3 id="dName">${esc(nm(p))}</h3>${zh()?`<p class="alt">${esc(p.name)}</p>`:""}
     <div class="actions">
       <a class="btn btn-ink" href="${esc(map)}" target="_blank" rel="noopener">${ic("pin")}${p.map?t("dMap"):t("dSearch")}${ic("ext",14)}</a>
       <button class="btn btn-line" data-copy="${esc(p.name)}">${ic("copy")}${t("dCopy")}</button>
