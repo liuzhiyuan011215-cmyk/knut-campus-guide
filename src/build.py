@@ -13,8 +13,10 @@ DESKTOP_COPY = pathlib.Path("/Users/wangyanan/Desktop/周二三晚_AI数据叙�
 PHOTOS = {1: "burrito_food.jpg", 2: "haekbap.jpg", 3: "hakgwan_cafeteria.jpg", 4: "liming.jpg",
           5: "gwonjjamppong.jpg", 6: "gamjatang.jpg", 7: "staff_cafeteria.jpg", 8: "ilmi_dakgalbi.jpg",
           26: "kinoya.jpg", 51: "bongousse.jpg", 55: "malatang.jpg", 65: "sinjeon_food.jpg",
-          96: "hoamji.jpg", 103: "library_stacks.jpg", 104: "library_room.jpg", 106: "stadium.jpg",
-          147: "ediya.jpg", 154: "w5_exterior.jpg"}
+          96: "hoamji.jpg", 97: "open_theater.jpg", 98: "carrel.jpg", 99: "dulle_gil.jpg",
+          100: "daewon_walk.jpg", 101: "blueport.jpg", 102: "humanities_theater.jpg", 103: "library_stacks.jpg",
+          104: "room3f.jpg", 106: "stadium.jpg", 126: "knut_campus.jpg", 147: "ediya.jpg",
+          154: "w5_exterior.jpg", 176: "fitness_club.jpg"}
 
 
 def data_uri(name):
