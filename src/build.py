@@ -16,7 +16,7 @@ PHOTOS = {1: "burrito_food.jpg", 2: "haekbap.jpg", 3: "hakgwan_cafeteria.jpg", 4
           96: "hoamji.jpg", 97: "open_theater.jpg", 98: "carrel.jpg", 99: "dulle_gil.jpg",
           100: "daewon_walk.jpg", 101: "blueport.jpg", 102: "humanities_theater.jpg", 103: "library_stacks.jpg",
           104: "room3f.jpg", 106: "stadium.jpg", 126: "knut_campus.jpg", 147: "ediya.jpg",
-          154: "w5_exterior.jpg", 176: "fitness_club.jpg"}
+          176: "fitness_club.jpg"}
 
 
 def data_uri(name):
