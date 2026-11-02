@@ -699,6 +699,9 @@ async function switchMode(m){
     {duration:170,easing:"cubic-bezier(.4,0,1,1)",fill:"forwards"}));
   await Promise.all(outs.map(a=>a.finished.catch(()=>{})));
   apply();
+  // 새 언어의 웹폰트를 받을 때까지 가려 둠 — 안 그러면 나타나는 도중 글꼴이 바뀌어 글자가 튐 (느린 망도 최대 1초만 대기)
+  void document.body.offsetHeight;
+  await Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1000))]);
   // 들어오는 애니메이션을 먼저 걸고 나서 나가는 애니메이션을 지워야 한 프레임도 비지 않음
   els.forEach(([el,d])=>el.animate([{opacity:0,transform:"translateY(10px)",filter:"blur(5px)"},{opacity:1,transform:"none",filter:"blur(0)"}],
     {duration:520,delay:d,easing:"cubic-bezier(.16,1,.3,1)",fill:"backwards"}));
