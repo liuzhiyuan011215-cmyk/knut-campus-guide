@@ -38,4 +38,4 @@
 python3 src/build.py
 ```
 
-데이터와 네이버 플레이스 실사진(`assets/`)이 `index.html` 하나에 들어가므로, GitHub에는 `index.html`만 올려도 됩니다.
+데이터와 네이버 플레이스 실사진(`assets/`)이 `index.html` 하나에 들어가므로, GitHub에는 `index.html`만 올려도 됩니다. (원본 사진 폴더 `assets/`는 용량 때문에 저장소에 넣지 않았고, 배포된 `index.html`에 이미 들어 있습니다. 그래서 `build.py`를 다시 실행하려면 사진 폴더가 따로 필요합니다.)
