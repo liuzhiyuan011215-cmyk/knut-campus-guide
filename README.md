@@ -7,6 +7,8 @@
 **배포 주소**: https://liuzhiyuan011215-cmyk.github.io/knut-campus-guide/  
 **저장소**: https://github.com/liuzhiyuan011215-cmyk/knut-campus-guide
 
+**본인 역할**: 개인 과제 — 250건 원본 데이터의 정규화 규칙(추측 금지·'확인 안 됨' 분리) 설계, 178곳 중국어 번역, 한/중 전환 UI 검증. 구현은 AI 코딩 도구를 활용했습니다.
+
 ---
 
 ## 1. 프로젝트 개요 및 데이터 정규화 특징
@@ -28,36 +30,7 @@
 
 ---
 
-## 3. GitHub Pages 배포 방법 (3분 완성)
-
-1. **GitHub 새 저장소(Repository) 생성**
-   - [https://github.com/new](https://github.com/new) 접속
-   - Repository name: `knut-campus-guide` 입력
-   - **Public** 선택 후 **Create repository** 클릭
-
-2. **`index.html` 업로드 (웹에서 바로 업로드하거나 터미널 사용)**
-   - **방법 A (웹 드래그 앤 드롭 — 가장 간단)**:
-     - 생성된 저장소 화면에서 **uploading an existing file** 클릭
-     - 이 폴더의 `index.html` 파일을 끌어다 놓고 하단 **Commit changes** 클릭
-   - **방법 B (VS Code 터미널 명령어)**:
-     ```bash
-     cd "/Users/wangyanan/vs code/knut-campus-guide"
-     git init
-     git add index.html README.md
-     git commit -m "feat: KNUT Campus Guide bilingual web app (178 normalized places)"
-     git branch -M main
-     git remote add origin https://github.com/<본인GitHub아이디>/knut-campus-guide.git
-     git push -u origin main
-     ```
-
-3. **GitHub Pages 켜기**
-   - 저장소 상단 메뉴 **Settings** → 좌측 메뉴 **Pages** 클릭
-   - **Build and deployment** 아래 **Branch**를 `None`에서 **`main`** (폴더 `/ (root)`)으로 변경 후 **Save** 클릭
-   - 약 1분 뒤 상단에 생성된 배포 링크(`https://<본인GitHub아이디>.github.io/knut-campus-guide/`)로 접속 및 과제 제출!
-
----
-
-## 4. 수정 방법 (선택)
+## 3. 수정 방법 (선택)
 
 `index.html`은 빌드 결과물입니다. 디자인·문구를 고치려면 `src/template.html`, 데이터를 고치려면 `src/data.json`을 수정한 뒤 다시 만듭니다.
 

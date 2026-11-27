@@ -2,11 +2,11 @@
 
 실행: python3 src/build.py
 """
-import base64, io, json, pathlib, shutil
+import base64, io, json, os, pathlib, shutil
 from PIL import Image
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-DESKTOP_COPY = pathlib.Path("/Users/wangyanan/Desktop/周二三晚_AI数据叙事与VibeCoding/3_其他资料/KNUT校园指南网站_单文件版_index.html")
+DESKTOP_COPY = pathlib.Path(os.environ["KNUT_COPY_TO"]) if os.environ.get("KNUT_COPY_TO") else None  # optional extra copy
 
 # 장소 id -> 네이버 플레이스 실사진 (assets/*_editorial.jpg 는 AI 생성 이미지라 사용하지 않음)
 # 2024년 이후 게시된 사진만 사용 (오래된 사진은 지금 모습과 달라 쓰지 않음)
@@ -39,6 +39,6 @@ assert "/*__" not in html
 
 out = ROOT / "index.html"
 out.write_text(html)
-if DESKTOP_COPY.parent.exists():
+if DESKTOP_COPY and DESKTOP_COPY.parent.exists():
     shutil.copyfile(out, DESKTOP_COPY)
 print(f"index.html {len(html)//1024} KB")
